@@ -1,0 +1,90 @@
+@font-face {
+    font-family: MontserratBold;
+    src: url("./../../Assets/font/Montserrat-Bold.ttf");
+  }
+  
+  @font-face {
+    font-family: MontserratLight;
+    src: url("./../../Assets/font/Montserrat-Light.ttf");
+  }
+  @font-face {
+    font-family: MontserratMedium;
+    src: url("./../../Assets/font/Montserrat/static/Montserrat-Medium.ttf")
+
+  }
+  
+  @font-face {
+    font-family: RubikMedium;
+    src: url("./../../Assets/font/Rubik-Medium.ttf");
+  }
+  
+  @font-face {
+    font-family: RubikLight;
+    src: url("./../../Assets/font/Rubik-Light.ttf");
+  }
+  @font-face {
+    font-family: RubikRegular;
+    src: url("./../../Assets/font/Rubik-Regular.ttf");
+  }
+  body{
+    padding: 0;
+    margin: 0;
+  }
+
+.Header{
+    background-color: #afc7c5;
+    /* height: -1%; */
+    height: 88px;
+    position: relative;
+    border-radius: 20px;
+    margin: 9px;
+  
+
+    
+}
+
+.inner-header{
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    align-content: space-between;
+    flex-direction: column;
+}
+.Header img{
+    position: absolute;
+    width: 15%;
+    top: -42px;
+}
+
+.buttons{
+    position: absolute;
+    display:flex ;
+    flex-direction: row;
+    margin-top: 22px;
+    margin-right: 30px;
+   
+}
+ .buttons .loginbtn{
+    background-color: #737373;
+    color: #afc7c5;
+    padding: 17px;
+    border: none;
+    border-radius: 9px;
+    margin-left: 37px;
+    font-family: "MontserratBold";
+}
+
+.buttons .registerbtn{
+    background-color: #737373;
+    color: #afc7c5;
+    padding: 17px;
+    border: none;
+    border-radius: 9px;
+    margin-left: 37px;
+    font-family: "MontserratBold";
+}
+
+.registerbtn:hover, .loginbtn:hover{
+    cursor: pointer;
+    background-color: white;
+}

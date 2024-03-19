@@ -1,0 +1,83 @@
+@font-face {
+    font-family: MontserratBold;
+    src: url("./../../Assets/font/Montserrat-Bold.ttf");
+  }
+  
+  @font-face {
+    font-family: MontserratLight;
+    src: url("./../../Assets/font/Montserrat-Light.ttf");
+  }
+  @font-face {
+    font-family: MontserratMedium;
+    src: url("./../../Assets/font/Montserrat/static/Montserrat-Medium.ttf")
+
+  }
+  
+  @font-face {
+    font-family: RubikMedium;
+    src: url("./../../Assets/font/Rubik-Medium.ttf");
+  }
+  
+  @font-face {
+    font-family: RubikLight;
+    src: url("./../../Assets/font/Rubik-Light.ttf");
+  }
+  @font-face {
+    font-family: RubikRegular;
+    src: url("./../../Assets/font/Rubik-Regular.ttf");
+  }
+
+  @font-face {
+    font-family: AlegreyaSansBold;
+    src: url("./../../Assets/font/Alegreya_Sans/AlegreyaSans-Bold.ttf");
+  }
+  
+
+  .logoutbtn{
+    background-color:#737373;
+       font-size: 20px;
+   color: white;
+    border: none;
+    font-family: "AlegreyaSansBold";
+    font-size: 32px;
+    padding: 18px;
+    border-radius: 20px;
+    margin-right: 12px;
+  }
+
+ .browseAuctionsbtn, .sellItembtn{
+    background-color: transparent;
+       font-size: 20px;
+   color: white;  
+    border: none;
+    font-family: "AlegreyaSansBold";
+    font-size: 22px;
+    padding: 15px;
+    border-radius: 20px;
+    margin: 0px 12px;
+  }
+
+  .browseAuctionsbtn:hover , .sellItembtn:hover{
+cursor: pointer;
+/* background-color:#737373; */
+color: #82b8b3;
+  }
+
+  .logoutbtn:hover{
+    background-color: #82b8b3;
+  
+color:#737373;
+  }
+
+  .LoggedinDetials{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+    background-color:#afc7c5;
+  }
+  .LoggedinDetials h1{
+    color: #ffffff;
+    font-family: "AlegreyaSansBold" ;
+    font-size: 30px;
+  }

@@ -1,0 +1,36 @@
+@font-face {
+    font-family: MontserratBold;
+    src: url("./../../Assets/font/Montserrat-Bold.ttf");
+  }
+  
+  @font-face {
+    font-family: MontserratLight;
+    src: url("./../../Assets/font/Montserrat-Light.ttf");
+  }
+  @font-face {
+    font-family: MontserratMedium;
+    src: url("./../../Assets/font/Montserrat/static/Montserrat-Medium.ttf")
+
+  }
+  
+  @font-face {
+    font-family: RubikMedium;
+    src: url("./../../Assets/font/Rubik-Medium.ttf");
+  }
+  
+  @font-face {
+    font-family: RubikLight;
+    src: url("./../../Assets/font/Rubik-Light.ttf");
+  }
+  @font-face {
+    font-family: RubikRegular;
+    src: url("./../../Assets/font/Rubik-Regular.ttf");
+  }
+
+  @font-face {
+    font-family: AlegreyaSansBold;
+    src: url("./../../Assets/font/Alegreya_Sans/AlegreyaSans-Bold.ttf");
+  }
+  
+
+  

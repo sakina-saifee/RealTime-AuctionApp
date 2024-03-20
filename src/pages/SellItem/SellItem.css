@@ -33,4 +33,94 @@
   }
   
 
+  .MuiFormControl-fullWidth, .inputText{
+ 
+    margin-top: 20px !important;
+}
+
+.uploadProductBtn{
+
+  background-color: #628d89 !important;
+}
+
+#modal-modal-title{
+color: #628d89;
+font-size: 30px;
+text-align: center;
+font-family: "MontserratBold";
+}
+
+.MuiFormLabel-root.Mui-focused {
+  color: #628d89 !important;
+}
+
+.successText{
+  border-bottom-color: #628d89 !important;
+}
+
+.inputText{
+  border-bottom: 2px solid #628d89 ;
+  width: 100%;
+  padding: 20px 0px;
+  color: #628d89;
+  background-color: #d7dfdd;
+}
+.MuiFilledInput-root.Mui-focused {
+    background-color: #d7dfdd !important;
+}
+
+.MuiFilledInput-underline:after {
   
+  border-bottom: 2px solid #628d89 !important;
+ 
+}
+.MuiSelect-icon{
+color: #628d89 !important;
+font-size: 20px !important;
+}
+
+.modalBtn{
+  background-color: #628d89 !important;
+}
+
+.SearchEngine{
+  background-color:  #628d89 ;
+  display: flex;
+  flex-direction: row;
+  padding: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.customerSupportIcon{
+  color: white !important;
+  font-size: 40px !important;
+}
+.ProductsearchBar{
+  padding: 2px 12px;
+
+  /* width: 100% !important; */
+}
+
+.customerSupport{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.customerSupport h3{
+  color: white;
+  font-family: "MontserratBold";
+  margin-left: 12px;
+}
+
+.myAuctionHeader{
+  border-bottom: 2px solid rgb(179, 171, 171);
+  width: 50%;
+  margin: 20px 12px;
+}
+.myAuctionHeader h1{
+
+  color: #628d89;
+  font-family: "MontserratBold";
+  font-size: 30px;
+}

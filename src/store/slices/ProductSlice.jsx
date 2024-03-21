@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState={
-    isLoggedin:false,
-    user:null,
+    productAuctionData:{},
+
 }
 
 const ProductSlice= createSlice({
@@ -10,10 +10,10 @@ name: "ProductSlice",
 initialState:initialState,
 reducers:{
     AddProduct: (state, action) =>{
-        state.isLoggedin=true;
-        state.user=action.payload; //login status in microreducer
+        // state.isLoggedin=true;
+        state.productAuctionData=action.payload; //login status in microreducer
 
-        console.log("userrr logged in data", action.payload)
+        console.log("userrr logged in data reducererr", action.payload)
     }, //micro reducer
     logout: (state, action)=>{
         state.isLoggedin=false;
@@ -28,4 +28,4 @@ reducers:{
 
 
 export default ProductSlice.reducer;
-export const {login, logout}=ProductSlice.actions;
+export const {AddProduct}=ProductSlice.actions;

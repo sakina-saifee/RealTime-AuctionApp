@@ -124,3 +124,11 @@ font-size: 20px !important;
   font-family: "MontserratBold";
   font-size: 30px;
 }
+
+.cardsDiv{
+  display: flex ;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: space-around;
+margin-top: 20px;
+}

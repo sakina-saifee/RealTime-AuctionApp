@@ -131,4 +131,10 @@ flex-direction: row;
 flex-wrap: wrap;
 justify-content: space-around;
 margin-top: 20px;
+
+}
+
+.css-1ri6ub7-MuiPaper-root-MuiCard-root 
+{
+margin-top: 30px !important;
 }

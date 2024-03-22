@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState={
-    productAuctionData:{},
+    productAuctionData:[{}
+    ],
 
 }
 
@@ -10,17 +11,35 @@ name: "ProductSlice",
 initialState:initialState,
 reducers:{
     AddProduct: (state, action) =>{
-        // state.isLoggedin=true;
+       
         state.productAuctionData=action.payload; //login status in microreducer
 
         console.log("userrr logged in data reducererr", action.payload)
     }, //micro reducer
-    logout: (state, action)=>{
-        state.isLoggedin=false;
-        state.user=null; //logout status in microreducer
+   
+    EditProduct(state, action){
+     
+        // console.log("slicee",action.payload)
+        // console.log("slicee id",action.payload.index)
+      
+         // Extract index and new data from action.payload
+      const { index, newData } = action.payload;
+    //   console.log("slicee newData",newData);
+      // Check if the index is within the array bounds
+      if (index >= 0 && index < state.productAuctionData.length) {
+        // Directly update the item at the given index with the new data
+        state.productAuctionData[index] = newData;
+      } else {
+      
+        console.error('Index out of bounds');
+      }
 
-        console.log("userrr logout", action.payload)
-    }
+        }, DeleteProduct(state, action){
+
+            // return state.filter((item, index) => index !== action.payload.index);
+        }, SearchProduct(state, action){
+
+        }
    
 },
 });
@@ -28,4 +47,4 @@ reducers:{
 
 
 export default ProductSlice.reducer;
-export const {AddProduct}=ProductSlice.actions;
+export const {AddProduct, EditProduct, DeleteProduct, SearchProduct}=ProductSlice.actions;

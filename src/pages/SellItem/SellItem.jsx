@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
 
-
+// import debounce from 'lodash.debounce';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -21,12 +21,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { useEffect, useState } from 'react';
 import { auth, db, storage } from './../../firebaseConfig/firebase';
-import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from 'react-toastify';
-import { ref as dbref, onValue, push, set } from 'firebase/database';
+import { ref as dbref, onValue, push, remove, set, update } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { AddProduct } from '../../store/slices/ProductSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddProduct, DeleteProduct, EditProduct } from '../../store/slices/ProductSlice';
 
 
 const style = {
@@ -43,10 +43,6 @@ const style = {
 
 
 export default function SellItem() {
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   const currencies = [
     {
@@ -72,21 +68,39 @@ export default function SellItem() {
   ];
   const [url, seturl] = useState(null);
   const [UploadImage, setUploadImage] = useState(null);
-  const [ImageList, setImageList] = useState([]);
-  const [UserProductsAuction, setUserProductsAuction] = useState([]);
-  const dispatch = useDispatch();
 
-  const [category, setCategory] = useState("");
+  const [UserProductsAuction, setUserProductsAuction] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [filteredProducts, setFilteredProducts] = useState(UserProductsAuction);
+
+  const dispatch = useDispatch();
+  const [category, setCategory] = useState(""); 
+  const [searchproductname, setsearchproductname] = useState(""); 
+
+  const [openEditModal, setopenEditModal] = useState(false);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const [productdata, setproductdata] = useState({
     productname: "",
     productdescription: "",
     startingbidprice: 0,
     productCategory: "",
   });
+  const [Editproductdata, setEditproductdata] = useState({
+    productname: "",
+    productdescription: "",
+    startingbidprice: 0,
+    productCategory: "",
+    pushKey: "",
+    index: 0,
+  });
   const navigate = useNavigate();
 
 
-
+  //normal handle change
   const handleDropdownChange = (event) => {
     const value = event.target.value;
     setCategory(value); // This will update the category state
@@ -106,9 +120,36 @@ export default function SellItem() {
 
     }));
 
-    console.log(productdata);
   };
 
+
+  //edit handle change
+  const handleEditDropdownChange = (event) => {
+    const value = event.target.value;
+    setCategory(value); // This will update the category state
+    setEditproductdata((prevData) => ({
+      ...prevData,
+      productCategory: value, // This will update the productCategory in productdata state
+    }));
+  };
+
+
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditproductdata((prevdata) => ({
+
+      ...prevdata,
+      [name]: value,
+
+
+    }));
+
+    // console.log(productdata);
+  };
+
+
+  // handle image change
   function imageChanges(file) {
     if (!file) {
       // toast.error("No image to upload");
@@ -125,12 +166,6 @@ export default function SellItem() {
     }).catch((error) => {
       toast.error("Failed to upload");
     });
-
-    // const geturl = ref(storage, `images/${UploadImage?.name}`)
-
-
-
-
   }
 
   useEffect(() => {
@@ -139,6 +174,9 @@ export default function SellItem() {
     }
   }, [UploadImage]);
 
+
+
+  //add product
   const UploadProduct = () => {
 
     console.log("Product Data", productdata)
@@ -149,15 +187,19 @@ export default function SellItem() {
 
 
     const user = auth.currentUser;
-    console.log("Product idd user", user.uid)
-    push(dbref(db, 'productUploadedForAuction/' + user?.uid), {
+
+    const postListRef = dbref(db, 'productUploadedForAuction/' + user?.uid);
+    const newPostRef = push(postListRef);
+    set(newPostRef, {
       ProductName: productdata?.productname,
       ProductDescription: productdata?.productdescription,
       StartingBidPrice: productdata?.startingbidprice,
       ProductCategory: productdata?.productCategory,
       Url: url,
       DateUploaded: Date.now(),
+      PushKey: newPostRef.key,
     })
+
       .then(() => {
         toast.success("Product Added For Auction Successfully!");
         setproductdata({
@@ -176,31 +218,7 @@ export default function SellItem() {
         toast.error("Error", error);
       })
 
-
-
-
-
-
-
   }
-
-
-  // const imageListRef = ref(storage, "images/");
-  // useEffect(() => {
-  //   listAll(imageListRef).then((res) => {
-  //     res.items.forEach((item) => {
-  //       getDownloadURL(item).then((url => {
-  //         setImageList((prev) => [...prev, url])
-
-  //       }))
-  //     })
-  //   })
-  // }, []);
-
-
-
-  // const [user, setUser] = useState("");
-
 
   useEffect(() => {
     auth.onAuthStateChanged((userlogged) => {
@@ -212,7 +230,7 @@ export default function SellItem() {
           const data = snapshot.val();
           if (data) {
             const Proddata = Object.values(data);
-            console.log("Proddata", Proddata);
+            // console.log("Proddata", Proddata);
             setUserProductsAuction(Proddata);
           }
 
@@ -224,28 +242,145 @@ export default function SellItem() {
   }, []);
 
 
+  //edit chnages in product details
+  const editProductDetails = (ProductName, ProductDescription, ProductCategory, StartingBidPrice, pushkey, index) => {
+    // console.log("edit indexxx", index)
+    setopenEditModal(true);
+    handleOpen();
+    setEditproductdata({
+      productname: ProductName,
+      productdescription: ProductDescription,
+      startingbidprice: StartingBidPrice,
+      productCategory: ProductCategory,
+      pushKey: pushkey,
+      index: index,
+    })
+
+  }
+
+  const UpdateProductDetails = (Editproductdata) => {
+
+    const user = auth.currentUser;
+
+    update(dbref(db, 'productUploadedForAuction/' + `${user?.uid}/` + `${Editproductdata?.pushKey}/`), {
+      ProductCategory: Editproductdata.productCategory,
+      ProductDescription: Editproductdata.productdescription,
+      ProductName: Editproductdata.productname,
+      StartingBidPrice: Editproductdata.startingbidprice,
+    }).then(() => {
+      toast.success("Updated Successfully!");
+    }).catch((error) => {
+      toast.error("Cannot be Updated!");
+    })
+    dispatch(EditProduct(Editproductdata))
+  }
+
+
+  //delete action
+
+  const DeleteProductItem = (pushkey, index) => {
+    console.log("deltee", pushkey, index);
+    const user = auth.currentUser;
+
+
+    remove(dbref(db, `productUploadedForAuction/${user?.uid}/${pushkey}`), {
+
+    }).then(() => {
+      toast.error("Deleted Successfully!");
+    }).catch((error) => {
+      toast.error("Cannot be Deleted!");
+    })
+    dispatch(DeleteProduct(Editproductdata))
+
+  }
+
+  const handleSearchName=(e)=>{
+    const { name, value } = e.target;
+    setsearchproductname(value);
+
+   
+  }
+
+  // const handleSearchName = (e) => {
+  //   const { value } = e.target;
+  //   setsearchproductname(value);
+  
+  //   if (value.trim() === "") {
+  //     // If the search query is empty, show all products
+  //     setFilteredProducts(UserProductsAuction);
+  //   } else {
+  //     // Filter the UserProductsAuction based on the search query
+  //     const filtered = UserProductsAuction.filter(item => 
+  //       item.productname?.toLowerCase().includes(value.toLowerCase())
+  //     );
+  //     setFilteredProducts(filtered);
+  //   }
+  // }
+
+  // const handleSearchName = (e) => {
+  //   const query = e.target.value.toLowerCase();
+  //   setSearchQuery(query);
+  
+  //   const filtered = UserProductsAuction.filter((item) =>
+  //     item?.productname.toLowerCase().includes(query)
+  //   );
+  
+  //   setFilteredProducts(filtered);
+  // };
+  
+  // const handleSearchName = (e) => {
+  //   const query = e.target.value.toLowerCase();
+  //   setSearchQuery(query);
+  
+  //   // Check if UserProductsAuction is defined and not null
+  //   if (UserProductsAuction && Array.isArray(UserProductsAuction)) {
+  //     const filtered = UserProductsAuction.filter((item) =>
+  //       item?.productname?.toLowerCase().includes(query)
+  //     );
+  
+  //     setFilteredProducts(filtered);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   setFilteredProducts(UserProductsAuction);
+  // }, [UserProductsAuction]);
+  
   useEffect(() => {
+    if(searchproductname){
+      console.log("searchhhhhhhhhhh", searchproductname)
+      console.log("searchhhhhhhhhhh", UserProductsAuction)
+      const filtered = UserProductsAuction.filter(item => 
+        item.ProductName?.toLowerCase().includes(searchproductname.toLowerCase())
+      );
+      setFilteredProducts(filtered)
+ console.log("filtered",filtered)
+    }else{
+setFilteredProducts(UserProductsAuction);
+    }
+    // console.log(" searchproductname ", searchproductname)
+
+    // setFilteredProducts(UserProductsAuction);
+    // if (searchproductname.trim() === "") {
+    //   // If the search query is empty, show all products
+    //   setFilteredProducts(UserProductsAuction);
+    // } else {
+
+    
+     
+
+   
+    // }
 
 
-    dispatch(AddProduct({
-      UserProductsAuction
-    }))
-
-  }, [UserProductsAuction])
-
-
-
-
-  useEffect(() => {
-
-    console.log("user products", UserProductsAuction);
-
-  }, [UserProductsAuction])
-
+    // setFilteredProducts(UserProductsAuction);
+  }, [searchproductname, UserProductsAuction]);
+  
   return (
 
     <>
 
+{/* search product */}
       <div className='SearchEngine'>
 
         <div className='customerSupport'>
@@ -256,10 +391,7 @@ export default function SellItem() {
 
 
         <Paper
-          component="form"
-
-
-
+          component="div"
         >
 
           <InputBase
@@ -267,6 +399,10 @@ export default function SellItem() {
             placeholder="Search Product By Name"
             className='ProductsearchBar'
             inputProps={{ 'aria-label': 'search google maps' }}
+            onChange={handleSearchName}
+            // onChange={(e)=>{debounce(()=>handleSearchName(e), 1000); }}
+            value={searchproductname}
+            name="searchproductname"
           />
           <IconButton type="button" aria-label="search">
             <SearchIcon />
@@ -282,10 +418,74 @@ export default function SellItem() {
 
       </div>
 
-      <Button variant="contained" className='modalBtn' endIcon={<AddToHomeScreenIcon />} onClick={handleOpen}> Enter Product Details</Button>
+      <Button variant="contained" className='modalBtn' endIcon={<AddToHomeScreenIcon />} onClick={() => { handleOpen(); setopenEditModal(false) }}> Enter Product Details</Button>
 
 
-      <Modal
+      {openEditModal ? <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Sell An Item
+          </Typography>
+
+          <div className='inputs'>
+
+            <TextField fullWidth label="Product Name" variant="filled" className="successText" focused name="productname"
+              value={Editproductdata.productname}
+              onChange={handleEditChange} />
+            <input className='inputText' type="file" onChange={(event) => {
+              const file = event.target.files[0];
+              setUploadImage(file);
+
+              imageChanges(file);
+
+
+            }
+
+            }></input>
+            <TextField fullWidth label="Description" variant="filled" focused name="productdescription"
+              value={Editproductdata.productdescription}
+              onChange={handleEditChange} />
+            <TextField fullWidth type="number" label="Starting Bid Price" variant="filled" focused
+              name="startingbidprice"
+              value={Editproductdata.startingbidprice}
+              onChange={handleEditChange}
+            />
+
+            <Select
+              label="Product Category"
+              defaultValue="Camera"
+
+              helperText="Please choose a category"
+              fullWidth
+              name="productCategory"
+              value={Editproductdata.productCategory}
+              onChange={handleEditDropdownChange}
+
+            >
+              {currencies.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+
+            </Select>
+
+
+          </div>
+
+          <Button variant="contained" className='uploadProductBtn' endIcon={<SendIcon />} onClick={() => { UpdateProductDetails(Editproductdata) }}> Edit Product Details </Button>
+
+
+
+
+        </Box>
+      </Modal> : <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -303,7 +503,7 @@ export default function SellItem() {
               value={productdata.productname}
               onChange={handleChange} />
             <input className='inputText' type="file" onChange={(event) => {
-              const file =event.target.files[0];
+              const file = event.target.files[0];
               setUploadImage(file);
 
               imageChanges(file);
@@ -349,58 +549,56 @@ export default function SellItem() {
 
 
         </Box>
-      </Modal>
+      </Modal>}
 
-      {/* {ImageList.map((url) => {
-        return <img src={url} />
-      })} */}
 
-<div className='cardsDiv'>
-{
-        UserProductsAuction.map((item, index) => {
-          const timestamp = item.DateUploaded; // Example timestamp
-          const date = new Date(timestamp);
-          const dateString = date.toLocaleTimeString();
-          console.log("date stringggg", dateString);
 
-          return <div>
-            <Card sx={{ maxWidth: 345 }}>
-              <CardMedia
-                component="img"
-                alt="Product Image"
-                height="140"
-                image={item.Url}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {item.ProductName}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.ProductDescription}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  <span>  <h3>Product Category</h3>{item.ProductCategory} </span>
-                </Typography>
+      <div className='cardsDiv'>
+        {
+          filteredProducts.map((item, index) => {
+            const timestamp = item.DateUploaded; // Example timestamp
+            const date = new Date(timestamp);
+            const dateString = date.toLocaleTimeString();
+            // console.log("date stringggg", dateString);
 
-                <div className='bidprice_dateupload'>
+            return <div>
+              <Card sx={{ maxWidth: 345 }}>
+                <CardMedia
+                  component="img"
+                  alt="Product Image"
+                  height="140"
+                  image={item.Url}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {item.ProductName}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {item.ProductDescription}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    <span>  <h3>Product Category</h3>{item.ProductCategory} </span>
+                  </Typography>
 
-                  <p className='dateupload'>Started on {dateString}</p>
-                  <p className='bidprice'>Starting Bid Price: PKR {item.StartingBidPrice} /-</p>
+                  <div className='bidprice_dateupload'>
 
-                </div>
-              </CardContent>
-              <CardActions>
-              <Button variant="contained" color="success" className='editproduct' >Edit</Button>
-              <Button variant="contained" color="error" className='delproduct' >Delete</Button>
-               
-          
-              </CardActions>
-            </Card>
-          </div>
-        })
-      }
-</div>
-      
+                    <p className='dateupload'>Started on {dateString}</p>
+                    <p className='bidprice'>Starting Bid Price: PKR {item.StartingBidPrice} /-</p>
+
+                  </div>
+                </CardContent>
+                <CardActions>
+                  <Button variant="contained" color="success" className='editproduct' onClick={() => { editProductDetails(item.ProductName, item.ProductDescription, item.ProductCategory, item.StartingBidPrice, item.PushKey, index) }} >Edit</Button>
+                  <Button variant="contained" color="error" className='delproduct' onClick={() => DeleteProductItem(item.PushKey, index)}>Delete</Button>
+
+
+                </CardActions>
+              </Card>
+            </div>
+          })
+        }
+      </div>
+
     </>
 
 

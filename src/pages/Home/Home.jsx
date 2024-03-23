@@ -23,7 +23,9 @@ const navigate=useNavigate();
    <div className='LoggedinDetials'>
     <div>
     <button onClick={LogoutUser} className='logoutbtn'>Logout</button>
-   <button  className='browseAuctionsbtn'>Browse Auctions</button>
+
+     
+   <Link to="/browseAuction">   <button className='browseAuctionsbtn'>Browse Auctions</button> </Link>
    
    <Link to="/sellitem">   <button className='sellItembtn'>Sell An Item</button> </Link>
    <button className='sellItembtn'>View My Listings</button>

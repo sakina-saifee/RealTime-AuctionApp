@@ -58,15 +58,15 @@
   }
 
   .browseAuctionsbtn:hover , .sellItembtn:hover{
-cursor: pointer;
+cursor: grab;
 /* background-color:#737373; */
 color: #82b8b3;
   }
 
   .logoutbtn:hover{
-    background-color: #82b8b3;
+    background-color: #82b8b3;;
   
-color:#737373;
+color:hsl(0, 0%, 100%);
   }
 
   .LoggedinDetials{
@@ -74,7 +74,7 @@ color:#737373;
     flex-direction: row;
     justify-content: space-between;
     padding: 20px;
-    background-color:#afc7c5;
+    background-color:  #628d89 ;
   }
   .LoggedinDetials h1{
     color: #ffffff;

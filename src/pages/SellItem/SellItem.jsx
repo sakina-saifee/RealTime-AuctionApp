@@ -26,8 +26,11 @@ import { toast } from 'react-toastify';
 import { ref as dbref, onValue, push, remove, set, update } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddProduct, DeleteProduct, EditProduct } from '../../store/slices/ProductSlice';
-
+import { AddProduct, Customcategories, DeleteProduct, EditProduct } from '../../store/slices/ProductSlice';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+// import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Search from '../../components/Search/Search';
+import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
   position: 'absolute',
@@ -76,12 +79,18 @@ export default function SellItem() {
 
   const dispatch = useDispatch();
   const [category, setCategory] = useState(""); 
-  const [searchproductname, setsearchproductname] = useState(""); 
+  const [CustomCategory, setCustomCategory] = useState(""); 
+  const [openCustomCategoryModal, setopenCustomCategoryModal] = useState(false); 
+  // const [searchproductname, setsearchproductname] = useState(""); 
 
   const [openEditModal, setopenEditModal] = useState(false);
   const [open, setOpen] = useState(false);
+  const [customOpen, setCustomOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleCustomOpen = () => setCustomOpen(true);
+  const handleCustomClose = () => setCustomOpen(false);
 
   const [productdata, setproductdata] = useState({
     productname: "",
@@ -98,7 +107,22 @@ export default function SellItem() {
     index: 0,
   });
   const navigate = useNavigate();
+  const filteredProductss=useSelector((state)=>{
+    return state.productAuction.searchedProduct
+})
 
+
+const customcategoriesDropdown=useSelector((state)=>{
+  console.log("Search categoriessss slice swell", state.productAuction.categories);
+  return state.productAuction.categories
+})
+
+
+
+useEffect(() => {
+
+console.log("customcategoriesDropdown", customcategoriesDropdown)
+}, [filteredProductss]);
 
   //normal handle change
   const handleDropdownChange = (event) => {
@@ -220,6 +244,7 @@ export default function SellItem() {
 
   }
 
+  // fetch product data from firebase 
   useEffect(() => {
     auth.onAuthStateChanged((userlogged) => {
       if (userlogged) {
@@ -294,96 +319,102 @@ export default function SellItem() {
 
   }
 
-  const handleSearchName=(e)=>{
-    const { name, value } = e.target;
-    setsearchproductname(value);
+  // const handleSearchName=(e)=>{
+  //   const { name, value } = e.target;
+  //   setsearchproductname(value);
 
    
-  }
-
-  // const handleSearchName = (e) => {
-  //   const { value } = e.target;
-  //   setsearchproductname(value);
-  
-  //   if (value.trim() === "") {
-  //     // If the search query is empty, show all products
-  //     setFilteredProducts(UserProductsAuction);
-  //   } else {
-  //     // Filter the UserProductsAuction based on the search query
-  //     const filtered = UserProductsAuction.filter(item => 
-  //       item.productname?.toLowerCase().includes(value.toLowerCase())
-  //     );
-  //     setFilteredProducts(filtered);
-  //   }
   // }
 
-  // const handleSearchName = (e) => {
-  //   const query = e.target.value.toLowerCase();
-  //   setSearchQuery(query);
+//   useEffect(() => {
+//     if(searchproductname){
+//       console.log("searchhhhhhhhhhh", searchproductname)
+//       console.log("searchhhhhhhhhhh", UserProductsAuction)
+//       const filtered = UserProductsAuction.filter(item => 
+//         item.ProductName?.toLowerCase().includes(searchproductname.toLowerCase())
+//       );
+//       setFilteredProducts(filtered)
+//  console.log("filtered",filtered)
+//     }else{
+// setFilteredProducts(UserProductsAuction);
+//     }
+//   }, [searchproductname, UserProductsAuction]);
   
-  //   const filtered = UserProductsAuction.filter((item) =>
-  //     item?.productname.toLowerCase().includes(query)
-  //   );
-  
-  //   setFilteredProducts(filtered);
-  // };
-  
-  // const handleSearchName = (e) => {
-  //   const query = e.target.value.toLowerCase();
-  //   setSearchQuery(query);
-  
-  //   // Check if UserProductsAuction is defined and not null
-  //   if (UserProductsAuction && Array.isArray(UserProductsAuction)) {
-  //     const filtered = UserProductsAuction.filter((item) =>
-  //       item?.productname?.toLowerCase().includes(query)
-  //     );
-  
-  //     setFilteredProducts(filtered);
-  //   }
-  // };
 
-  // useEffect(() => {
-  //   setFilteredProducts(UserProductsAuction);
-  // }, [UserProductsAuction]);
-  
-  useEffect(() => {
-    if(searchproductname){
-      console.log("searchhhhhhhhhhh", searchproductname)
-      console.log("searchhhhhhhhhhh", UserProductsAuction)
-      const filtered = UserProductsAuction.filter(item => 
-        item.ProductName?.toLowerCase().includes(searchproductname.toLowerCase())
-      );
-      setFilteredProducts(filtered)
- console.log("filtered",filtered)
-    }else{
-setFilteredProducts(UserProductsAuction);
-    }
-    // console.log(" searchproductname ", searchproductname)
 
-    // setFilteredProducts(UserProductsAuction);
-    // if (searchproductname.trim() === "") {
-    //   // If the search query is empty, show all products
-    //   setFilteredProducts(UserProductsAuction);
-    // } else {
+  // const Back=()=>{
+  //   navigate("/userhome")
+  // }
 
-    
-     
+  const [categories, setCategories] = useState([
+    { value: 'Mobile Phones', label: 'Mobile Phones' },
+    { value: 'Laptop', label: 'Laptop' },
+    { value: 'Tv Screen', label: 'LCDs' },
+    { value: 'Camera', label: 'Camera' },
+    { value: 'Headphones', label: 'Headphones' },
+  ]);
 
+
+  // const currencies = [
+  //   {
+  //     value: 'Mobile Phones',
+  //     label: 'Mobile Phones',
+  //   },
+  //   {
+  //     value: 'Laptop',
+  //     label: 'Laptop',
+  //   },
+  //   {
+  //     value: 'Tv Screen',
+  //     label: 'LCDs',
+  //   },
+  //   {
+  //     value: 'Camera',
+  //     label: 'Camera',
+  //   },
+  //   {
+  //     value: 'Headphones',
+  //     label: 'Headphones',
+  //   },
+  // ];
+
+  const handleCustomCategoryChange=(e)=>{
+    const { name, value } = e.target;
+    setCustomCategory(value);
+  }
+  const AddCustomCategory=()=>{
+    console.log("CustomCategory",CustomCategory)
+    // currencies.push({value:CustomCategory,
+    // label: CustomCategory})
    
-    // }
+    if (CustomCategory && !categories.some(category => category.value === CustomCategory)) {
+      // Use the setCategories to add the new category
+      setCategories(prevCategories => [
+        ...prevCategories,
+        { value: CustomCategory, label: CustomCategory },
+      ]);
+    }
+  }
 
+  useEffect(() => {
+    console.log('Updated categories:', categories);
+    dispatch(Customcategories(categories))
+  }, [categories]); 
 
-    // setFilteredProducts(UserProductsAuction);
-  }, [searchproductname, UserProductsAuction]);
-  
+  useEffect(()=>{
+
+  },[CustomCategory])
   return (
 
     <>
 
 {/* search product */}
-      <div className='SearchEngine'>
+
+<Search UserProductsAuction={UserProductsAuction} />
+      {/* <div className='SearchEngine'>
 
         <div className='customerSupport'>
+        <ArrowBackIcon className='backBtn' onClick={Back}/>
           <SupportAgentIcon className='customerSupportIcon' />
           <h3>Customer Support</h3>
         </div>
@@ -411,7 +442,7 @@ setFilteredProducts(UserProductsAuction);
 
         </Paper>
 
-      </div>
+      </div> */}
 
       <div className='myAuctionHeader'>
         <h1>My Auction Listing</h1>
@@ -496,6 +527,7 @@ setFilteredProducts(UserProductsAuction);
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Sell An Item
           </Typography>
+       
 
           <div className='inputs'>
 
@@ -532,7 +564,7 @@ setFilteredProducts(UserProductsAuction);
               onChange={handleDropdownChange}
 
             >
-              {currencies.map((option) => (
+              {customcategoriesDropdown.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -543,6 +575,8 @@ setFilteredProducts(UserProductsAuction);
 
           </div>
 
+          <Button variant="contained" className='addCustomCategoryBtn' endIcon={<AddCircleIcon/>} onClick={()=>{setopenCustomCategoryModal(true); handleCustomOpen();}}> + Add Custom Category</Button>
+
           <Button variant="contained" className='uploadProductBtn' endIcon={<SendIcon />} onClick={UploadProduct}> Upload Product To Auction </Button>
 
 
@@ -551,11 +585,45 @@ setFilteredProducts(UserProductsAuction);
         </Box>
       </Modal>}
 
+{openCustomCategoryModal?<Modal
+        open={customOpen}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Sell An Item
+          </Typography>
+          <div>
+           <CloseIcon className='closeicon' onClick={handleCustomClose}/>
+          </div>
+          <div className='inputs'>
+
+            <TextField fullWidth label="Category Name" variant="filled" className="successText" focused name="customcategoryname"
+              value={CustomCategory}
+           onChange={handleCustomCategoryChange} />
+           
+          
+
+
+          </div>
+
+       
+
+          <Button variant="contained" className='uploadProductBtn' endIcon={<SendIcon />} onClick={AddCustomCategory}> Add Category </Button>
+
+
+
+
+        </Box>
+      </Modal>: <div></div>}
 
 
       <div className='cardsDiv'>
         {
-          filteredProducts.map((item, index) => {
+          filteredProductss?.map((item, index) => {
             const timestamp = item.DateUploaded; // Example timestamp
             const date = new Date(timestamp);
             const dateString = date.toLocaleTimeString();

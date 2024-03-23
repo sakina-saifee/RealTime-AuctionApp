@@ -7,6 +7,7 @@ import Home from './pages/Home/Home';
 import Signup from './pages/login-signup/Signup';
 import 'react-toastify/dist/ReactToastify.css';
 import SellItem from './pages/SellItem/SellItem';
+import BrowseAuction from './pages/BrowseAuction/BrowseAuction';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route exact path="/userhome" element={<Home />} />
         <Route exact path="/userSignup" element={<Signup />} />
         <Route exact path="/sellitem" element={<SellItem />} />
+        <Route exact path="/browseAuction" element={<BrowseAuction />} />
       </Routes>
     </>
   );

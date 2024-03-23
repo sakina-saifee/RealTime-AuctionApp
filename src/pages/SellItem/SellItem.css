@@ -138,3 +138,36 @@ margin-top: 20px;
 {
 margin-top: 30px !important;
 }
+
+.backBtn{
+  font-size: 30px !important;
+  color: white !important;
+
+}
+
+.backBtn:hover{
+  cursor: grab;
+}
+
+.css-sghohy-MuiButtonBase-root-MuiButton-root{
+  margin-top: 20px !important;
+}
+
+.MuiInputBase-fullWidth{
+  margin-top: 8px !important;
+}
+
+.addCustomCategoryBtn{
+  background-color: #d7dfdd !important;
+  color: #628d89 !important;
+  width: 50% !important;
+}
+
+.closeicon{
+  color: #628d89 !important;
+  font-size: 30px !important;
+}
+
+.closeicon:hover{
+cursor: pointer;
+}

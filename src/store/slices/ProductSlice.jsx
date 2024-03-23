@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState={
     productAuctionData:[{}
     ],
+    searchedProduct:[{}], 
+    categories:[{}]
 
 }
 
@@ -38,6 +40,13 @@ reducers:{
 
             // return state.filter((item, index) => index !== action.payload.index);
         }, SearchProduct(state, action){
+          state.searchedProduct=action.payload
+
+        },
+        Customcategories:(state, action)=>{
+          state.categories=action.payload
+
+
 
         }
    
@@ -47,4 +56,4 @@ reducers:{
 
 
 export default ProductSlice.reducer;
-export const {AddProduct, EditProduct, DeleteProduct, SearchProduct}=ProductSlice.actions;
+export const {AddProduct, EditProduct, DeleteProduct, SearchProduct,Customcategories}=ProductSlice.actions;

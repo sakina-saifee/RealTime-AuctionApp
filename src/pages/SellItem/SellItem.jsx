@@ -222,6 +222,7 @@ console.log("customcategoriesDropdown", customcategoriesDropdown)
       Url: url,
       DateUploaded: Date.now(),
       PushKey: newPostRef.key,
+      UserUid: user?.uid,
     })
 
       .then(() => {
